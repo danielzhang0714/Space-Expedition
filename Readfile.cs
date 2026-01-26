@@ -8,6 +8,7 @@ namespace Space_Expedition {
     internal class Readfile {
         char[] origin = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
         char[] map = new char[] { 'H', 'Z', 'A', 'U', 'Y', 'E', 'K', 'G', 'O', 'T', 'I', 'R', 'J', 'V', 'W', 'N', 'M', 'F', 'Q', 'S', 'D', 'B', 'X', 'L', 'C', 'P' };
+
         public static void Read() {
 
         }
@@ -48,14 +49,14 @@ namespace Space_Expedition {
         }
         public string decodeName(string encodename) {
             if (string.IsNullOrWhiteSpace(encodename)) return "";
-            encodename = encodename.Trim().TrimEnd(',');
+            encodename = encodename.Trim();
 
-            int tokenCount = 1;
+            int tokencount = 1;
             for (int i = 0; i < encodename.Length; i++) {
-                if (encodename[i] == '|') tokenCount++;
+                if (encodename[i] == '|') tokencount++;
             }
 
-            return decodeName(encodename, tokenCount);
+            return decodeName(encodename, tokencount);
         }
 
     }
