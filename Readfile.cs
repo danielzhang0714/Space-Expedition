@@ -42,7 +42,6 @@ namespace Space_Expedition {
                 }
                 length--;
                 leftcode = encodename.Remove(i, removeLen);
-
                 return decodedname + decodeName(leftcode, length);
             }
             return decodedname;
