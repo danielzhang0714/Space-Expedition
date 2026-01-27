@@ -6,5 +6,7 @@ using System.Threading.Tasks;
 
 namespace Space_Expedition {
     internal class Menu {
+        Artifact[] artifacts;
+        int count;
     }
 }

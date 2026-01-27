@@ -9,9 +9,34 @@ namespace Space_Expedition {
         char[] origin = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
         char[] map = new char[] { 'H', 'Z', 'A', 'U', 'Y', 'E', 'K', 'G', 'O', 'T', 'I', 'R', 'J', 'V', 'W', 'N', 'M', 'F', 'Q', 'S', 'D', 'B', 'X', 'L', 'C', 'P' };
 
-        public static void Read() {
-
+        public static void Read(string path, out Artifact[] artifacts, out int count) {
+            artifacts = new Artifact[10];
+            count = 0;
+            using (StreamReader reader = new StreamReader(path)) {
+                string line;
+                while((line = reader.ReadLine()) != null) {
+                    string[] temparr = line.Split(',');
+                    if (temparr.Length < 4) continue;
+                    Artifact arti = new Artifact(temparr[0].Trim(), temparr[1].Trim(), temparr[2].Trim(), temparr[3].Trim(), temparr[4].Trim());
+                    CheckArr(ref artifacts, count + 1);
+                    artifacts[count] = arti;
+                    count++;
+                }
+            }
         }
+        private static void CheckArr(ref Artifact[] arti, int maxnum) {
+            if (maxnum <= arti.Length) return;
+            int newsize = arti.Length * 2;
+            if (newsize < maxnum) {
+                maxnum = newsize;
+            }
+            Artifact[] newarti = new Artifact[newsize];
+            for (int i = 0; i < arti.Length; i++) {
+                newarti[i] = arti[i];
+            }
+            arti = newarti;
+        }
+
         public static void selectionSort() {
 
         }
