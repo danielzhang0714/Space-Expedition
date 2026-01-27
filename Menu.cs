@@ -9,7 +9,12 @@ namespace Space_Expedition {
         public static void Run() {
             Artifact[] artifacts;
             int count;
-            //Readfile.Read("galactic_vault.txt", out artifacts, out count);
+            Readfile readfile = new Readfile();
+            readfile.Read("galactic_vault.txt", out artifacts, out count);
+            Selections();
+        }
+        public static void Selections() {
+
         }
         public static void CountMove() {
             int move = 0;
