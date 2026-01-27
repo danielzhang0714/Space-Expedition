@@ -46,9 +46,33 @@ namespace Space_Expedition {
             arti = newarti;
         }
 
-        //public void selectionSort() {
-
-        //}
+        public void selectionSort(string[] decodeartilist, int count) {
+            for(int i = 0; i < count; i++) {
+                string target = decodeartilist[i];
+                int j = i - 1;
+                while (j >=0 && decodeartilist[j].CompareTo(target) > 0) {
+                    decodeartilist[j + 1] = decodeartilist[j];
+                    j--;
+                }
+                decodeartilist[j + 1] = target;
+            }
+        }
+        public int binarySearch(string[] decodeartilist, string target) {
+            int lo = 0;
+            int hi = decodeartilist.Length - 1;
+            while(lo <= hi) {
+                int mid = lo + (hi - lo) / 2;
+                int compare = decodeartilist[mid].Trim().CompareTo(target);
+                if (compare == 0) {
+                    return mid;
+                } else if (compare > 0) {
+                    return hi = mid - 1;
+                } else {
+                    lo = mid + 1;
+                }
+            }
+            return -1;
+        }
         //recursive -- return the full decoded name, passing full string into it
         private string decodeName(string encodename, int length) {
             if (length <= 0 || string.IsNullOrEmpty(encodename)) {
