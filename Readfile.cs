@@ -9,22 +9,31 @@ namespace Space_Expedition {
         char[] origin = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
         char[] map = new char[] { 'H', 'Z', 'A', 'U', 'Y', 'E', 'K', 'G', 'O', 'T', 'I', 'R', 'J', 'V', 'W', 'N', 'M', 'F', 'Q', 'S', 'D', 'B', 'X', 'L', 'C', 'P' };
 
-        public static void Read(string path, out Artifact[] artifacts, out int count) {
+        public void Read(string path, out Artifact[] artifacts, out int count) {
             artifacts = new Artifact[10];
             count = 0;
-            using (StreamReader reader = new StreamReader(path)) {
-                string line;
-                while((line = reader.ReadLine()) != null) {
-                    string[] temparr = line.Split(',');
-                    if (temparr.Length < 4) continue;
-                    Artifact arti = new Artifact(temparr[0].Trim(), temparr[1].Trim(), temparr[2].Trim(), temparr[3].Trim(), temparr[4].Trim());
-                    CheckArr(ref artifacts, count + 1);
-                    artifacts[count] = arti;
-                    count++;
+            try {
+                using (StreamReader reader = new StreamReader(path)) {
+                    string line;
+                    while ((line = reader.ReadLine()) != null) {
+                        if (string.IsNullOrWhiteSpace(line)) continue;
+                        string[] temparr = line.Split(',');
+                        if (temparr.Length < 5) {
+                            continue;
+                        }
+                        Artifact arti = new Artifact(temparr[0].Trim(), temparr[1].Trim(), temparr[2].Trim(), temparr[3].Trim(), temparr[4].Trim());
+                        CheckArr(ref artifacts, count + 1);
+                        artifacts[count] = arti;
+                        count++;
+                    }
                 }
+            } catch (FileNotFoundException) {
+                Console.WriteLine("File not found: " + path);
+            } catch (Exception e) {
+                Console.WriteLine("Error reading file: " + e.Message);
             }
         }
-        private static void CheckArr(ref Artifact[] arti, int maxnum) {
+        private void CheckArr(ref Artifact[] arti, int maxnum) {
             if (maxnum <= arti.Length) return;
             int newsize = arti.Length * 2;
             if (newsize < maxnum) {
@@ -37,52 +46,83 @@ namespace Space_Expedition {
             arti = newarti;
         }
 
-        public static void selectionSort() {
+        //public void selectionSort() {
 
-        }
+        //}
         //recursive -- return the full decoded name, passing full string into it
         private string decodeName(string encodename, int length) {
-            string decodedname = "";
-            string leftcode = encodename;
-            if (length == 0) return "";
-            for (int i = 0; i < encodename.Length; i++) {
-                if (!char.IsLetter(encodename[i])) continue;
-                char code = char.ToUpper(encodename[i]);
-                if (i + 1 >= encodename.Length) continue;
-                if (!char.IsDigit(encodename[i + 1])) continue;
-                int k = i + 1;
-                while (k < encodename.Length && char.IsDigit(encodename[k])) {
-                    k++;
-                }
-                int number = int.Parse(encodename.Substring(i + 1, k - (i + 1)));
-                for (int j = 0; j < origin.Length; j++) {
-                    if (code == origin[j]) {
-                        code = map[j];
-                        break;
-                    }
-                }
-                decodedname += new string(code, number);
-                int removeLen = k - i;
-                if (k < encodename.Length && encodename[k] == '|') {
-                    removeLen++;
-                }
-                length--;
-                leftcode = encodename.Remove(i, removeLen);
-                return decodedname + decodeName(leftcode, length);
+            if (length <= 0 || string.IsNullOrEmpty(encodename)) {
+                return "";
             }
-            return decodedname;
+            int i = 0;
+            while (i < encodename.Length && !char.IsLetter(encodename[i])) {
+                i++;
+            }
+            if(i >= encodename.Length) {
+                return "";
+            }
+            char currentchar = char.ToUpper(encodename[i]);
+            int numstart = i + 1;
+            if(numstart >= encodename.Length || !char.IsDigit(encodename[numstart])) {
+                return "";
+            }
+            int numend = numstart;
+            while (numend < encodename.Length && char.IsDigit(encodename[numend])){
+                numend++;
+            }
+            int layers = int.Parse(encodename.Substring(numstart, numend - numstart));
+            char decodechar = Currentdecodeandnumber(currentchar, layers);
+            int nextstart = numend;
+            if(nextstart < encodename.Length && encodename[nextstart] == '|') {
+                nextstart++;
+            }
+            string remainingstring;
+            if (nextstart < encodename.Length) {
+                remainingstring = encodename.Substring(nextstart);
+            } else {
+                remainingstring = "";
+            }
+            return decodechar + decodeName(remainingstring, length - 1);
+        }
+        private char Currentdecodeandnumber(char character, int layers) {
+            if(layers == 0) {
+                return character;
+            }
+            char mapped = character;
+            for(int i = 0; i < origin.Length; i++) {
+                if(character == origin[i]) {
+                    mapped = map[i];
+                    break;
+                }
+            }
+            return Currentdecodeandnumber(mapped, layers - 1);
         }
         public string decodeName(string encodename) {
             if (string.IsNullOrWhiteSpace(encodename)) return "";
             encodename = encodename.Trim();
-
             int tokencount = 1;
             for (int i = 0; i < encodename.Length; i++) {
                 if (encodename[i] == '|') tokencount++;
             }
-
             return decodeName(encodename, tokencount);
         }
+        public string[] AddToArr(Artifact[] artifacts, int count) {
+            string[] decodeartilist = new string[count];
+            for (int i = 0; i < count; i++) {
+                string singleencode = artifacts[i].EncodedName;
+                string result = decodeName(singleencode);
+                decodeartilist[i] = result;
+            }
+            return decodeartilist;
+        }
 
+        public void PrintArtiName(string[] decodeartilist) {
+            using (StreamWriter printlist  = new StreamWriter("Artifact List.txt")) {
+                for(int i = 0; i < decodeartilist.Length; i++) {
+                    printlist.WriteLine(decodeartilist[i]);
+                    Console.WriteLine($"{decodeartilist[i]}");
+                }
+            }
+        }
     }
 }

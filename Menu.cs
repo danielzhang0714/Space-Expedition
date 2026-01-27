@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace Space_Expedition {
     internal class Menu {
-        Artifact[] artifacts;
-        int count;
+        public static void Run() {
+            Artifact[] artifacts;
+            int count;
+            //Readfile.Read("galactic_vault.txt", out artifacts, out count);
+        }
+        public static void CountMove() {
+            int move = 0;
+            move++;
+        }
     }
 }
