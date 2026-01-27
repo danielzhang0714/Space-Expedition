@@ -8,6 +8,7 @@ namespace Space_Expedition {
     internal class Readfile {
         char[] origin = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
         char[] map = new char[] { 'H', 'Z', 'A', 'U', 'Y', 'E', 'K', 'G', 'O', 'T', 'I', 'R', 'J', 'V', 'W', 'N', 'M', 'F', 'Q', 'S', 'D', 'B', 'X', 'L', 'C', 'P' };
+        char[] reverse = new char[] { 'Z', 'Y', 'X', 'W', 'V', 'U', 'T', 'S', 'R', 'Q', 'P', 'O', 'N', 'M', 'L', 'K', 'J', 'I', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A' };
 
         public void Read(string path, out Artifact[] artifacts, out int count) {
             artifacts = new Artifact[10];
@@ -78,6 +79,10 @@ namespace Space_Expedition {
             if (length <= 0 || string.IsNullOrEmpty(encodename)) {
                 return "";
             }
+            if (encodename[0] == ' ') {
+                length++;
+                return ' ' + decodeName(encodename.Substring(1), length - 1);
+            }
             int i = 0;
             while (i < encodename.Length && !char.IsLetter(encodename[i])) {
                 i++;
@@ -119,14 +124,23 @@ namespace Space_Expedition {
                     break;
                 }
             }
+            if (layers == 1) {
+                for (int j = 0; j < origin.Length; j++) {
+                    if (character == origin[j]) {
+                        mapped = reverse[j];
+                        break;
+                    }
+                }
+            }
             return Currentdecodeandnumber(mapped, layers - 1);
         }
         public string decodeName(string encodename) {
-            if (string.IsNullOrWhiteSpace(encodename)) return "";
+            if (string.IsNullOrEmpty(encodename)) return "";
             encodename = encodename.Trim();
             int tokencount = 1;
             for (int i = 0; i < encodename.Length; i++) {
                 if (encodename[i] == '|') tokencount++;
+                if (encodename[i] == ' ') tokencount++;
             }
             return decodeName(encodename, tokencount);
         }
