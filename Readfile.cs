@@ -58,10 +58,9 @@ namespace Space_Expedition {
                 decodeartilist[j + 1] = target;
             }
         }
-        public void OrderedInsertion(string[] decodeartilist, int count) {
+        public void OrderedInsertion(string[] decodeartilist,string input, int count) {
             selectionSort(decodeartilist,count);
             Console.WriteLine("Please enter the artifact you want to add");
-            string input = Console.ReadLine();
                 int i = count - 1;
                 while (i >= 0 && decodeartilist[i].CompareTo(input) > 0) {
                 decodeartilist[i + 1] = decodeartilist[i];
