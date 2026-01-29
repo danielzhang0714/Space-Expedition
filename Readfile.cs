@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -59,22 +60,22 @@ namespace Space_Expedition {
             }
         }
         public void OrderedInsertion(string[] decodeartilist,string input, int count) {
-            selectionSort(decodeartilist,count);
-            Console.WriteLine("Please enter the artifact you want to add");
+            if (decodeartilist == null) throw new ArgumentNullException(nameof(decodeartilist));
+            if (count >= decodeartilist.Length)
+                throw new IndexOutOfRangeException("Array capacity is insufficient.");
                 int i = count - 1;
                 while (i >= 0 && decodeartilist[i].CompareTo(input) > 0) {
                 decodeartilist[i + 1] = decodeartilist[i];
                     i--;
-                Console.WriteLine($"Successfully Added new artifact {input}");
                 }
-                while(i >= 0 && decodeartilist[i].CompareTo(input.ToUpper()) == 0) {
-                Console.WriteLine($"Already have existing artifact: {decodeartilist[i]}");
-            }
+                if(i >= 0 && decodeartilist[i].ToUpper().CompareTo(input.ToUpper()) == 0) {
+                throw new ArgumentException($"Already have existing artifact: {decodeartilist[i]}");
+                }
             decodeartilist[i + 1] = input;
-                count++;
-            
         }
-        public int binarySearch(string[] decodeartilist, string target) {
+        public int binarySearch(string[] decodeartilist,int count, string target) {
+            if (decodeartilist == null) return -1;
+            if (string.IsNullOrWhiteSpace(target)) return -1;
             int lo = 0;
             int hi = decodeartilist.Length - 1;
             while(lo <= hi) {
@@ -170,9 +171,9 @@ namespace Space_Expedition {
             return decodeartilist;
         }
 
-        public void PrintArtiName(string[] decodeartilist) {
+        public void PrintArtiName(string[] decodeartilist, int count) {
             using (StreamWriter printlist  = new StreamWriter("Artifact List.txt")) {
-                for(int i = 0; i < decodeartilist.Length; i++) {
+                for(int i = 0; i < count; i++) {
                     printlist.WriteLine(decodeartilist[i]);
                     Console.WriteLine($"{decodeartilist[i]}");
                 }
