@@ -35,6 +35,30 @@ namespace Space_Expedition {
                 Console.WriteLine("Error reading file: " + e.Message);
             }
         }
+        public bool ReadNewArti(string path, out Artifact arti) {
+            arti = null;
+            try {
+                if (!File.Exists(path))
+                    return false;
+                if (string.IsNullOrWhiteSpace(path))
+                    return false;
+                using (StreamReader reader = new StreamReader(path)) {
+                    string line;
+                    while ((line = reader.ReadLine()) != null) {
+                        string[] temparr = line.Split(',');
+                        if (temparr.Length < 5) {
+                            return false;
+                        }
+                        arti = new Artifact(temparr[0].Trim(), temparr[1].Trim(), temparr[2].Trim(), temparr[3].Trim(), temparr[4].Trim());
+                        return true;
+                    }
+                    return false;
+                }
+            } catch {
+                arti = null;
+                return false;
+            }
+        }
         private void CheckArti(ref Artifact[] arti, int count) {
             if (count <= arti.Length) return;
             int newsize = arti.Length * 2;
@@ -187,6 +211,7 @@ namespace Space_Expedition {
             using (StreamWriter printlist  = new StreamWriter("Artifact List.txt")) {
                 for(int i = 0; i < count; i++) {
                     Artifact arti = artifact[i];
+                    if (arti == null) continue;
                     string decoded = decodeName(arti.EncodedName);
                     Console.WriteLine($"Name: {decoded}");
                     Console.WriteLine($"Planet: {arti.Planet}");

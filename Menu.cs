@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -51,24 +52,25 @@ namespace Space_Expedition {
         }
         public void AddNewArti() {
             Console.Write("Please enter the artifact you want to add: ");
-            string input = Console.ReadLine().ToUpper();
-            if (string.IsNullOrWhiteSpace(input)) {
-                Console.WriteLine("Invalid input, please retry");
+            string input = Console.ReadLine();
+            string path = $"{input}.txt";
+            if (!readfile.ReadNewArti(path, out Artifact newArti)) {
+                Console.WriteLine("Artifact not found");
                 CountMove();
-                RecordMove("Entered invalid input when adding new artifact");
                 return;
             }
+            string decodename = readfile.decodeName(newArti.EncodedName);
             try {
-                checkDuplicate(decodeartilist, input, count);
+                if(readfile.binarySearch(decodeartilist, count, decodename) != -1) {
+                    throw new ArgumentException("This artifact is already existing");
+                }
+                artifacts[count] = newArti;
                 readfile.OrderedInsertion(ref decodeartilist, input, ref count);
-                CountPlus();
+                count++;
                 Console.WriteLine($"New artifact: {input} successfully added");
             } catch (ArgumentException e) {
                 Console.WriteLine(e.Message);
             }
-        }
-        public void CountPlus() {
-            count++;
         }
         public void CountMove() {
             move++;
@@ -88,12 +90,6 @@ namespace Space_Expedition {
                     summary.WriteLine($"{i + 1}:{moves[i]}");
                 }
             }
-        }
-        public void checkDuplicate(string[] decodeartilist, string input, int count) {
-            if (readfile.binarySearch(decodeartilist, count, input) != -1) {
-                throw new ArgumentException($"Already have existing artifact: {input}");
-            }
-            readfile.OrderedInsertion(ref decodeartilist, input,ref count);
         }
     }
 }
