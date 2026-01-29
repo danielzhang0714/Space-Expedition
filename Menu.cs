@@ -78,7 +78,7 @@ namespace Space_Expedition {
                 moves.Add(step);
         }
         public void DisplayList() {
-            readfile.PrintArtiName(decodeartilist, count);
+            readfile.PrintArtiName(artifacts, count);
             CountMove();
             RecordMove("Viewed artifact list");
         }

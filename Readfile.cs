@@ -183,11 +183,17 @@ namespace Space_Expedition {
             return decodeartilist;
         }
 
-        public void PrintArtiName(string[] decodeartilist, int count) {
+        public void PrintArtiName(Artifact[] artifact, int count) {
             using (StreamWriter printlist  = new StreamWriter("Artifact List.txt")) {
                 for(int i = 0; i < count; i++) {
-                    printlist.WriteLine(decodeartilist[i]);
-                    Console.WriteLine($"{decodeartilist[i]}");
+                    Artifact arti = artifact[i];
+                    string decoded = decodeName(arti.EncodedName);
+                    Console.WriteLine($"Name: {decoded}");
+                    Console.WriteLine($"Planet: {arti.Planet}");
+                    Console.WriteLine($"DiscoveryDate: {arti.DiscoveryDate}");
+                    Console.WriteLine($"StorageLocation: {arti.StorageLocation}");
+                    Console.WriteLine($"Description: {arti.Description}");
+
                 }
             }
         }
