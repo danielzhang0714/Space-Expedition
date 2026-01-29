@@ -24,7 +24,7 @@ namespace Space_Expedition {
                             continue;
                         }
                         Artifact arti = new Artifact(temparr[0].Trim(), temparr[1].Trim(), temparr[2].Trim(), temparr[3].Trim(), temparr[4].Trim());
-                        CheckArr(ref artifacts, count + 1);
+                        CheckArti(ref artifacts, count + 1);
                         artifacts[count] = arti;
                         count++;
                     }
@@ -35,17 +35,29 @@ namespace Space_Expedition {
                 Console.WriteLine("Error reading file: " + e.Message);
             }
         }
-        private void CheckArr(ref Artifact[] arti, int maxnum) {
-            if (maxnum <= arti.Length) return;
+        private void CheckArti(ref Artifact[] arti, int count) {
+            if (count <= arti.Length) return;
             int newsize = arti.Length * 2;
-            if (newsize < maxnum) {
-                maxnum = newsize;
+            if (newsize < count) {
+                newsize = count;
             }
             Artifact[] newarti = new Artifact[newsize];
-            for (int i = 0; i < arti.Length; i++) {
+            for (int i = 0; i < count; i++) {
                 newarti[i] = arti[i];
             }
             arti = newarti;
+        }
+        private void CheckArr(ref string[] decodeartilist, int maxnum) {
+            if (maxnum <= decodeartilist.Length) return;
+            int newsize = decodeartilist.Length * 2;
+            if (newsize < maxnum) {
+                maxnum = newsize;
+            }
+            string[] newarr = new string[newsize];
+            for (int i = 0; i < decodeartilist.Length; i++) {
+                newarr[i] = decodeartilist[i];
+            }
+            decodeartilist = newarr;
         }
 
         public void selectionSort(string[] decodeartilist, int count) {
@@ -59,32 +71,32 @@ namespace Space_Expedition {
                 decodeartilist[j + 1] = target;
             }
         }
-        public void OrderedInsertion(string[] decodeartilist,string input, int count) {
+        public void OrderedInsertion(ref string[] decodeartilist,string input,ref int count) {
             if (decodeartilist == null) throw new ArgumentNullException(nameof(decodeartilist));
-            if (count >= decodeartilist.Length)
-                throw new IndexOutOfRangeException("Array capacity is insufficient.");
+                CheckArr(ref decodeartilist, count + 1);
                 int i = count - 1;
                 while (i >= 0 && decodeartilist[i].CompareTo(input) > 0) {
                 decodeartilist[i + 1] = decodeartilist[i];
                     i--;
-                }
-                if(i >= 0 && decodeartilist[i].ToUpper().CompareTo(input.ToUpper()) == 0) {
+            }
+            if (i >= 0 && decodeartilist[i].CompareTo(input.ToUpper()) == 0) {
                 throw new ArgumentException($"Already have existing artifact: {decodeartilist[i]}");
-                }
+            }
             decodeartilist[i + 1] = input;
+            count++;
         }
         public int binarySearch(string[] decodeartilist,int count, string target) {
             if (decodeartilist == null) return -1;
             if (string.IsNullOrWhiteSpace(target)) return -1;
             int lo = 0;
-            int hi = decodeartilist.Length - 1;
+            int hi = count - 1;
             while(lo <= hi) {
                 int mid = lo + (hi - lo) / 2;
                 int compare = decodeartilist[mid].Trim().CompareTo(target);
                 if (compare == 0) {
                     return mid;
                 } else if (compare > 0) {
-                    return hi = mid - 1;
+                    hi = mid - 1;
                 } else {
                     lo = mid + 1;
                 }

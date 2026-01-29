@@ -51,7 +51,7 @@ namespace Space_Expedition {
         }
         public void AddNewArti() {
             Console.Write("Please enter the artifact you want to add: ");
-            string input = Console.ReadLine();
+            string input = Console.ReadLine().ToUpper();
             if (string.IsNullOrWhiteSpace(input)) {
                 Console.WriteLine("Invalid input, please retry");
                 CountMove();
@@ -59,8 +59,8 @@ namespace Space_Expedition {
                 return;
             }
             try {
-                CheckArr(ref decodeartilist, count + 1);
-                readfile.OrderedInsertion(decodeartilist, input, count);
+                checkDuplicate(decodeartilist, input, count);
+                readfile.OrderedInsertion(ref decodeartilist, input, ref count);
                 CountPlus();
                 Console.WriteLine($"New artifact: {input} successfully added");
             } catch (ArgumentException e) {
@@ -89,17 +89,11 @@ namespace Space_Expedition {
                 }
             }
         }
-        private void CheckArr(ref string[] arr, int maxnum) {
-            if (maxnum <= arr.Length) return;
-            int newsize = arr.Length * 2;
-            if (newsize < maxnum) {
-                maxnum = newsize;
+        public void checkDuplicate(string[] decodeartilist, string input, int count) {
+            if (readfile.binarySearch(decodeartilist, count, input) != -1) {
+                throw new ArgumentException($"Already have existing artifact: {input}");
             }
-            string[] newarr = new string[newsize];
-            for (int i = 0; i < arr.Length; i++) {
-                newarr[i] = arr[i];
-            }
-            arr = newarr;
+            readfile.OrderedInsertion(ref decodeartilist, input,ref count);
         }
     }
 }
